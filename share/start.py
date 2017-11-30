@@ -20,7 +20,7 @@ def OpenChrome(url):
 def OpenPDF(name):
     file = name + ".pdf"
     # os.chdir("/home/ubuntu/pdf")
-    subprocess.Popen("C:\Program Files\Foxit Software\Foxit Reader\FoxitReader.exe H:\\" + file)
+    subprocess.Popen("C:\Program Files\Foxit Software\Foxit Reader\FoxitReader.exe H:\\pdf\" + file)
     # os.chdir("/home/ubuntu")
 
 
