@@ -98,7 +98,7 @@ if __name__ == "__main__":
         web_list.append(i)
 
     while (count<1): # core dump 5 times
-        file_abs = "/home/wei/share/sample.txt"
+        file_abs = "/home/wei/vm_mem_dump_tool/share/sample.txt"
         web_select(web_list)
         PDF_select()
         app_select()
@@ -112,7 +112,7 @@ if __name__ == "__main__":
         print('dumped!!')
         os.system('VBoxManage controlvm win7 poweroff')
         time.sleep(5)
-        os.rename("/home/wei/share/sample.txt", "/home/wei/share/sample" + str(count) + ".txt")
-        shutil.move("/home/wei/share/sample" + str(count) + ".txt", "/home/wei/log")
+        os.rename("/home/wei/vm_mem_dump_tool/share/sample.txt", "/home/wei/vm_mem_dump_tool/share/sample" + str(count) + ".txt")
+        shutil.move("/home/wei/vm_mem_dump_tool/share/sample" + str(count) + ".txt", "/home/wei/vm_mem_dump_tool/log/")
         print("the" + str(count) + "th has done")
         count=count+1
