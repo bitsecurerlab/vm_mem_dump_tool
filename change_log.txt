@@ -1,0 +1,13 @@
+add prefer apps
+fixed some path issue of some apps
+add system apps
+
+---------------------------
+vm changes:
+install firefox
+install MSE
+install adobe reader
+install office
+uninstall meitu
+uninstall pokki
+uninstall nero

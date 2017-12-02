@@ -5,56 +5,68 @@ import shutil
 from os import listdir
 from os.path import isfile, join
 
-IMAGE_COUNT = 1
+IMAGE_COUNT = 2
 PROCESS_COUNT = 40
-share_path = '/home/wei/vm_mem_dump_tool/share/'
-command2 = 'VBoxManage debugvm win7 dumpvmcore --filename = /media/wei/be4108ae-9679-47ab-8ad8-7d4c9bc0f0a6/sample/coredump'
+SHARE_PATH = '/home/wei/vm_mem_dump_tool/share/'
+IMAGE_PATH = '/media/wei/be4108ae-9679-47ab-8ad8-7d4c9bc0f0a6/sample/coredump'
+command2 = 'VBoxManage debugvm win7 dumpvmcore --filename = ' + IMAGE_PATH
 command1 = 'VBoxManage startvm win7 --type gui' ##choose one vm
-PDFlist = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]
-file_abs = share_path + 'sample.txt'
+OUTPUT = SHARE_PATH + 'sample.txt'
 web_list = []
 app_list = []
+app_win_list = []
 pdf_list = []
 pic_list = []
+executed = []
+prefer_pdf_app = ''
+prefer_web_app = ''
 
 def Log(line):
     print line
-    file = open(file_abs, 'a')
+    file = open(OUTPUT, 'a')
     file.write(str(line) + '\n')
     file.close()
 
-def start_app():
-    app = random.sample(app_list,1)[0]
-    line = 'app\t' + app
-    Log(line)
+def add_app(process_type):
+    try_time = 0
+    while(True):
+        if process_type == 'app':
+            app = random.sample(app_list,1)[0]
+        elif process_type == 'app_win':
+            app = random.sample(app_win_list,1)[0]
+        line = 'app\t' + app
+        try_time += 1
+        if try_time > 100:
+            break
+        if line not in executed:
+            executed.append(line)
+            Log(line)
+            break
 
-def start_pic():
-    #print 'pic', pic_list
+def add_pic():
     pic = random.sample(pic_list, 1)[0]
     line = 'pic\t' + pic
     Log(line)
 
-def start_pdf():
-    #print 'pdf', pdf_list
+def add_pdf():
     pdf = random.sample(pdf_list, 1)[0]
-    line = 'pdf\t' + pdf
+    line = prefer_pdf_app + '\t' + pdf
     Log(line)
 
-def start_web():
+def add_web():
     website = random.sample(web_list, 1)[0]
-    line = 'web\t' + website
+    line = prefer_web_app + '\t' + website
     Log(line)
 
-def get_process_type():
-    return random.sample(['web', 'pdf', 'pic', 'app'], 1)[0]
+def random_process_type():
+    return random.sample(['web', 'pdf', 'pic', 'app', 'app_win'], 1)[0]
 
 def clear_output():
-    f = open(share_path + 'sample.txt','w')
+    f = open(SHARE_PATH + 'sample.txt','w')
     f.close()
 
-def main():
-    clear_output()
-    f = open(share_path + 'domain.txt','r')
+def load_list():
+    f = open(SHARE_PATH + 'domain.txt','r')
     for line in f:
         line = line.strip()
         if len(line) == 0:
@@ -62,7 +74,7 @@ def main():
         line = 'https://www.' + line
         web_list.append(line)
     f.close()
-    f = open(share_path + 'app.txt','r')
+    f = open(SHARE_PATH + 'app.txt','r')
     for line in f:
         line = line.strip()
         if len(line) == 0:
@@ -70,35 +82,51 @@ def main():
         s = line.split('\t')
         app_list.append(s[1])
     f.close()
-    #pdf_list = [f for f in listdir(share_path + 'pdf/') if isfile(join(share_path + 'pdf/', f))]
-    #pic_list = [f for f in listdir(share_path + 'pic/') if isfile(join(share_path + 'pic/', f))]
-    for f in listdir(share_path + 'pdf/'):
+    f = open(SHARE_PATH + 'app_windows.txt','r')
+    for line in f:
+        line = line.strip()
+        if len(line) == 0:
+            break
+        s = line.split('\t')
+        app_win_list.append(s[1])
+    f.close()
+    for f in listdir(SHARE_PATH + 'pdf/'):
         pdf_list.append(f)
-    for f in listdir(share_path + 'pic/'):
+    for f in listdir(SHARE_PATH + 'pic/'):
         pic_list.append(f)
+
+def load_prefer_app():
+    global prefer_pdf_app, prefer_web_app
+    prefer_pdf_app = random.sample(['adobe', 'foxit'], 1)[0]
+    prefer_web_app = random.sample(['firefox', 'chrome', 'ie'], 1)[0]
+    
+def main():
+    clear_output()
+    load_list()
+    load_prefer_app()
     for image_count in range(IMAGE_COUNT):
         for process_count in range(PROCESS_COUNT):
-            process_type = get_process_type()
+            process_type = random_process_type()
             if process_type == 'web':
-                start_web()
+                add_web()
             if process_type == 'pdf':
-                start_pdf()
-            if process_type == 'app':
-                start_app()
+                add_pdf()
+            if process_type == 'app' or process_type == 'app_win':
+                add_app(process_type)
             if process_type == 'pic':
-                start_pic()
-            continue
-            os.system(command1)
-            print('Started!')
-            time.sleep(150)
-            command = command2 + str(image_count) + '.img'
-            os.system(command)
-            print('Dumped!')
-            os.system('VBoxManage controlvm win7 poweroff')
-            time.sleep(5)
-            os.rename(share_path + 'sample.txt', share_path + 'sample' + str(image_count) + '.txt')
-            shutil.move(share_path + 'sample' + str(image_count) + '.txt', share_path + 'log/')
-            print('The ' + str(image_count) + 'th has done')
+                add_pic()
+        continue
+        os.system(command1)
+        print('Started!')
+        time.sleep(200)
+        command = command2 + str(image_count) + '.img'
+        os.system(command)
+        print('Dumped!')
+        os.system('VBoxManage controlvm win7 poweroff')
+        time.sleep(5)
+        os.rename(SHARE_PATH + 'sample.txt', SHARE_PATH + 'sample' + str(image_count) + '.txt')
+        shutil.move(SHARE_PATH + 'sample' + str(image_count) + '.txt', SHARE_PATH + 'log/')
+        print('The ' + str(image_count) + 'th image has done')
 
 if __name__ == '__main__':
     main()

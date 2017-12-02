@@ -1,0 +1,31 @@
+Calculator	calc
+Command Prompt	cmd
+Windows Explorer	explorer
+Windows PowerShell	powershell
+WordPad	write
+Windows Media Player	wmplayer
+Windows Firewall	firewall.cpl
+Windows Fax and Scan	wfs
+Windows Disc Image Burning Tool	isoburn
+Volume Mixer	sndvol
+Task Manager	taskmgr
+Sound recorder	soundrecorder
+Sound	mmsys.cpl
+Services	services.msc
+Screen Resolution	desk.cpl
+Registry Editor	regedit
+Printer User Interface	printui
+On-Screen Keyboard	osk
+Notepad	notepad
+Magnifier	magnify
+Disk Cleanup	cleanmgr
+Backup and Restore	sdclt
+Control Panel	control
+Date and Time	timedate.cpl
+Device Manager	hdwwiz.cpl
+System Configuration	msconfig
+System Information	msinfo32
+Task Scheduler	taskschd.msc
+Utility Manager	utilman
+Windows Remote Assistance	msra
+Windows Update	wuapp
