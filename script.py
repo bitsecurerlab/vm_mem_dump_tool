@@ -6,7 +6,7 @@ from os import listdir
 from os.path import isfile, join
 
 IMAGE_COUNT = 2
-PROCESS_COUNT = 40
+PROCESS_COUNT = 30
 SHARE_PATH = '/home/wei/vm_mem_dump_tool/share/'
 IMAGE_PATH = '/media/wei/be4108ae-9679-47ab-8ad8-7d4c9bc0f0a6/sample/coredump'
 command2 = 'VBoxManage debugvm win7 dumpvmcore --filename = ' + IMAGE_PATH
@@ -17,6 +17,9 @@ app_list = []
 app_win_list = []
 pdf_list = []
 pic_list = []
+doc_list = []
+ppt_list = []
+xls_list = []
 executed = []
 prefer_pdf_app = ''
 prefer_web_app = ''
@@ -44,8 +47,23 @@ def add_app(process_type):
             break
 
 def add_pic():
-    pic = random.sample(pic_list, 1)[0]
-    line = 'pic\t' + pic
+    file_name = random.sample(pic_list, 1)[0]
+    line = 'pic\t' + file_name
+    Log(line)
+
+def add_doc():
+    file_name = random.sample(doc_list, 1)[0]
+    line = 'doc\t' + file_name
+    Log(line)
+
+def add_ppt():
+    file_name = random.sample(ppt_list, 1)[0]
+    line = 'ppt\t' + file_name
+    Log(line)
+
+def add_xls():
+    file_name = random.sample(xls_list, 1)[0]
+    line = 'xls\t' + file_name
     Log(line)
 
 def add_pdf():
@@ -59,7 +77,7 @@ def add_web():
     Log(line)
 
 def random_process_type():
-    return random.sample(['web', 'pdf', 'pic', 'app', 'app_win'], 1)[0]
+    return random.sample(['web', 'pdf', 'pic', 'app', 'app', 'app', 'app_win', 'doc' ,'ppt', 'xls'], 1)[0]
 
 def clear_output():
     f = open(SHARE_PATH + 'sample.txt','w')
@@ -94,6 +112,12 @@ def load_list():
         pdf_list.append(f)
     for f in listdir(SHARE_PATH + 'pic/'):
         pic_list.append(f)
+    for f in listdir(SHARE_PATH + 'doc/'):
+        doc_list.append(f)
+    for f in listdir(SHARE_PATH + 'ppt/'):
+        ppt_list.append(f)
+    for f in listdir(SHARE_PATH + 'xls/'):
+        xls_list.append(f)
 
 def load_prefer_app():
     global prefer_pdf_app, prefer_web_app
@@ -115,6 +139,12 @@ def main():
                 add_app(process_type)
             if process_type == 'pic':
                 add_pic()
+            if process_type == 'doc':
+                add_doc()
+            if process_type == 'ppt':
+                add_ppt()
+            if process_type == 'xls':
+                add_xls()
         continue
         os.system(command1)
         print('Started!')

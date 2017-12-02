@@ -1,6 +1,7 @@
 add prefer apps
 fixed some path issue of some apps
 add system apps
+add office apps, random choose doc, ppt, xls files
 
 ---------------------------
 vm changes:

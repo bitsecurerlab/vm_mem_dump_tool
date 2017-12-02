@@ -28,6 +28,18 @@ def open_pdf(app, name):
         app_path = 'C:\\Program Files\\Foxit Software\\Foxit Reader\\FoxitReader.exe'
     subprocess.Popen(app_path + ' ' + SHARE_PATH + 'pdf\\' + name)
 
+def open_doc(name, f):
+    app_path = 'C:\\Program Files\\Kingsoft\\WPS Office\\10.8.0.6206\\office6\\wps.exe'
+    subprocess.Popen(app_path + ' ' + SHARE_PATH + 'doc\\' + name)
+
+def open_ppt(name, f):
+    app_path = 'C:\\Program Files\\Kingsoft\\WPS Office\\10.8.0.6206\\office6\\wpp.exe'
+    subprocess.Popen(app_path + ' ' + SHARE_PATH + 'ppt\\' + name)
+
+def open_xls(name, f):
+    app_path = 'C:\\Program Files\\Kingsoft\\WPS Office\\10.8.0.6206\\office6\\et.exe'
+    subprocess.Popen(app_path + ' ' + SHARE_PATH + 'xls\\' + name)
+
 def open_app(app, f):
     try:
         subprocess.Popen(app)
@@ -80,6 +92,12 @@ def main():
             open_app(s[1], f)
         elif (s[0] == 'pic'):
             open_pic(s[1], f)
+        elif (s[0] == 'doc'):
+            open_doc(s[1], f)
+        elif (s[0] == 'ppt'):
+            open_ppt(s[1], f)
+        elif (s[0] == 'xls'):
+            open_xls(s[1], f)
         time.sleep(4)
     f.close()
 
