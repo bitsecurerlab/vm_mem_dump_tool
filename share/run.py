@@ -7,10 +7,12 @@ import time
 import random
 import subprocess
 import datetime
+import paramiko
 
 #subprocess.Popen('C:\\Program Files\\Notepad++\\notepad++.exe')
-SAMPLE_PATH = 'F:\\sample.txt'
-SHARE_PATH = 'F:\\'
+SAMPLE_NAME = 'sample.txt'
+SHARE_PATH = 'C:\\'
+SAMPLE_PATH = SHARE_PATH + SAMPLE_NAME
 
 def open_web(app, url):
     if app == 'chrome':
@@ -55,17 +57,23 @@ def open_pic(pic, f):
     except:
         f.writelines('error ' + pic + '\n')
 
-def Benchmark():
+def benchmark():
     time.sleep(300)
     os.system('stress-ng --cpu 4 --vm 2 --hdd 1 --fork 8 --switch 4 --timeout 5m --metrics-brief')
 
-def Random(a, b):
-    r = random.randint(a, b)
-    return r
+def download_list():
+    ssh = paramiko.SSHClient() 
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh.connect('biocluster.ucr.edu', username='wsong008', password='cl3412CL@er')
+    sftp = ssh.open_sftp()
+    sftp.get('/rhome/wsong008/bigdata/vm_mem_dump_tool/share/' + SAMPLE_NAME, 'C:\\' + SAMPLE_NAME)
+    sftp.close()
+    ssh.close()
 
 def main():
     while (os.path.exists(SAMPLE_PATH) == False):
         time.sleep(2)
+        download_list()
     result = []
     f = open(SAMPLE_PATH, 'r')
     for line in f:

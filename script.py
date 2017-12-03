@@ -5,7 +5,7 @@ import shutil
 from os import listdir
 from os.path import isfile, join
 
-IMAGE_COUNT = 2
+IMAGE_COUNT = 1
 PROCESS_COUNT = 30
 SHARE_PATH = '/home/wei/vm_mem_dump_tool/share/'
 IMAGE_PATH = '/media/wei/be4108ae-9679-47ab-8ad8-7d4c9bc0f0a6/sample/coredump'
