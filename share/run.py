@@ -9,9 +9,8 @@ import subprocess
 import datetime
 import paramiko
 
-#subprocess.Popen('C:\\Program Files\\Notepad++\\notepad++.exe')
 SAMPLE_NAME = 'sample.txt'
-SHARE_PATH = 'C:\\'
+SHARE_PATH = 'C:\\share\\'
 SAMPLE_PATH = SHARE_PATH + SAMPLE_NAME
 
 def open_web(app, url):
@@ -45,7 +44,7 @@ def open_xls(name, f):
 def open_app(app, f):
     try:
         subprocess.Popen(app)
-        f.writelines(str(datetime.datetime.now()) + '\tapp\t' + app + '\n')
+        f.writelines('[' + get_time() + ']\tapp\t' + app + '\n')
     except:
         f.writelines('error ' + app + '\n')
 
@@ -53,7 +52,7 @@ def open_pic(pic, f):
     try:
         #subprocess.Popen('C:\\Program Files\\Meitu\\KanKan\\KanKan.exe ' + SHARE_PATH + '\\pic\\' + pic)
         subprocess.Popen('mspaint ' + SHARE_PATH + '\\pic\\' + pic)
-        f.writelines(str(datetime.datetime.now()) + '\tpic\t' + pic + '\n')
+        f.writelines('[' + get_time() + ']\tpic\t' + pic + '\n')
     except:
         f.writelines('error ' + pic + '\n')
 
@@ -62,18 +61,30 @@ def benchmark():
     os.system('stress-ng --cpu 4 --vm 2 --hdd 1 --fork 8 --switch 4 --timeout 5m --metrics-brief')
 
 def download_list():
-    ssh = paramiko.SSHClient() 
+    ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect('biocluster.ucr.edu', username='wsong008', password='cl3412CL@er')
     sftp = ssh.open_sftp()
-    sftp.get('/rhome/wsong008/bigdata/vm_mem_dump_tool/share/' + SAMPLE_NAME, 'C:\\' + SAMPLE_NAME)
+    sftp.get('/rhome/wsong008/bigdata/vm_mem_dump_tool/share/' + SAMPLE_NAME, SAMPLE_PATH)
     sftp.close()
     ssh.close()
 
+def upload_result():
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh.connect('biocluster.ucr.edu', username='wsong008', password='cl3412CL@er')
+    sftp = ssh.open_sftp()
+    sftp.put(SAMPLE_PATH, '/rhome/wsong008/bigdata/vm_mem_dump_tool/share/result_' + SAMPLE_NAME)
+    sftp.close()
+    ssh.close()
+
+def get_time():
+    return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
 def main():
-    while (os.path.exists(SAMPLE_PATH) == False):
-        time.sleep(2)
-        download_list()
+    download_list()
+    #while (os.path.exists(SAMPLE_PATH) == False):
+    #    time.sleep(2)
     result = []
     f = open(SAMPLE_PATH, 'r')
     for line in f:
@@ -85,17 +96,17 @@ def main():
     #print result
     log = []
     bufsize = 0
-    f = open(SAMPLE_PATH, 'a', bufsize)
-    f.writelines('\n---------internal log---------\n')
+    f = open(SAMPLE_PATH, 'ab', bufsize)
+    f.writelines('\n---------internal log---------\n\n')
     for line in result:
         print line
         s = line.split('\t')
         if (s[0] == 'foxit' or s[0] == 'adobe'):
             open_pdf(s[0], s[1])
-            f.writelines(str(datetime.datetime.now()) + '\t' + s[0] + '\t' + s[1] + '\n')
+            f.writelines('[' + get_time() + ']\t' + s[0] + '\t' + s[1] + '\n')
         elif (s[0] == 'ie' or s[0] == 'firefox' or s[0] == 'chrome'):
             open_web(s[0], s[1])
-            f.writelines(str(datetime.datetime.now()) + '\t' + s[0] + '\t' + s[1] + '\n')
+            f.writelines('[' + get_time() + ']\t' + s[0] + '\t' + s[1] + '\n')
         elif (s[0] == 'app'):
             open_app(s[1], f)
         elif (s[0] == 'pic'):
@@ -106,8 +117,9 @@ def main():
             open_ppt(s[1], f)
         elif (s[0] == 'xls'):
             open_xls(s[1], f)
-        time.sleep(4)
+        time.sleep(random.randint(1, 3))
     f.close()
+    upload_result()
 
 if __name__ == '__main__':
     main()
