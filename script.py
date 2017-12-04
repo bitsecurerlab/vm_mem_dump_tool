@@ -7,10 +7,10 @@ from os.path import isfile, join
 
 IMAGE_COUNT = 1
 PROCESS_COUNT = 30
-SHARE_PATH = '/home/wei/vm_mem_dump_tool/share/'
-IMAGE_PATH = '/media/wei/be4108ae-9679-47ab-8ad8-7d4c9bc0f0a6/sample/coredump'
-command2 = 'VBoxManage debugvm win7 dumpvmcore --filename = ' + IMAGE_PATH
-command1 = 'VBoxManage startvm win7 --type gui' ##choose one vm
+SHARE_PATH = '/rhome/wsong008/bigdata/vm_mem_dump_tool/share/'
+IMAGE_PATH = '/rhome/wsong008/bigdata/vm_mem_dump_tool/memdump/'
+COMMAND_START_VM = 'VBoxManage startvm win7 --type gui' ##choose one vm
+COMMAND_DUMP = 'VBoxManage debugvm win7 dumpvmcore --filename = ' + IMAGE_PATH
 OUTPUT = SHARE_PATH + 'sample.txt'
 web_list = []
 app_list = []
@@ -129,6 +129,7 @@ def main():
     load_list()
     load_prefer_app()
     for image_count in range(IMAGE_COUNT):
+        print('======================================')
         for process_count in range(PROCESS_COUNT):
             process_type = random_process_type()
             if process_type == 'web':
@@ -145,18 +146,16 @@ def main():
                 add_ppt()
             if process_type == 'xls':
                 add_xls()
-        continue
-        os.system(command1)
+        #os.system(COMMAND_START_VM)
         print('Started!')
-        time.sleep(200)
-        command = command2 + str(image_count) + '.img'
-        os.system(command)
+        time.sleep(2)########
+        #os.system(COMMAND_DUMP + 'memdump_' + str(image_count) + '.img')
         print('Dumped!')
-        os.system('VBoxManage controlvm win7 poweroff')
+        #os.system('VBoxManage controlvm win7 poweroff')
         time.sleep(5)
-        os.rename(SHARE_PATH + 'sample.txt', SHARE_PATH + 'sample' + str(image_count) + '.txt')
-        shutil.move(SHARE_PATH + 'sample' + str(image_count) + '.txt', SHARE_PATH + 'log/')
-        print('The ' + str(image_count) + 'th image has done')
+        print('mv ' + SHARE_PATH + 'result_sample.txt ' + IMAGE_PATH + 'memdump_' + str(image_count) + '.log')
+        os.system('mv ' + SHARE_PATH + 'result_sample.txt ' + IMAGE_PATH + 'memdump_' + str(image_count) + '.log')
+        print('The ' + str(image_count) + 'th image is generated.')
 
 if __name__ == '__main__':
     main()
