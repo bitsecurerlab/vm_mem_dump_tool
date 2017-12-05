@@ -13,7 +13,7 @@ SAMPLE_NAME = 'sample.txt'
 SHARE_PATH = 'C:\\share\\'
 SAMPLE_PATH = SHARE_PATH + SAMPLE_NAME
 
-def open_web(app, url):
+def open_web(app, url, f):
     if app == 'chrome':
         app_path = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
     elif app == 'firefox':
@@ -21,25 +21,30 @@ def open_web(app, url):
     elif app == 'ie':
         app_path = 'C:\\Program Files\\Internet Explorer\\iexplore.exe'
     subprocess.Popen(app_path + ' ' + url)
+    f.writelines('[' + get_time() + ']\t' + app + '\t' + url + '\n')
 
-def open_pdf(app, name):
+def open_pdf(app, name, f):
     if app == 'adobe':
         app_path = 'C:\\Program Files\\Adobe\\Acrobat Reader DC\\Reader\\AcroRd32.exe'
     elif app == 'foxit':
         app_path = 'C:\\Program Files\\Foxit Software\\Foxit Reader\\FoxitReader.exe'
     subprocess.Popen(app_path + ' ' + SHARE_PATH + 'pdf\\' + name)
+    f.writelines('[' + get_time() + ']\t' + app + '\t' + name + '\n')
 
 def open_doc(name, f):
     app_path = 'C:\\Program Files\\Kingsoft\\WPS Office\\10.8.0.6206\\office6\\wps.exe'
     subprocess.Popen(app_path + ' ' + SHARE_PATH + 'doc\\' + name)
+    f.writelines('[' + get_time() + ']\tdoc\t' + name + '\n')
 
 def open_ppt(name, f):
     app_path = 'C:\\Program Files\\Kingsoft\\WPS Office\\10.8.0.6206\\office6\\wpp.exe'
     subprocess.Popen(app_path + ' ' + SHARE_PATH + 'ppt\\' + name)
+    f.writelines('[' + get_time() + ']\tppt\t' + name + '\n')
 
 def open_xls(name, f):
     app_path = 'C:\\Program Files\\Kingsoft\\WPS Office\\10.8.0.6206\\office6\\et.exe'
     subprocess.Popen(app_path + ' ' + SHARE_PATH + 'xls\\' + name)
+    f.writelines('[' + get_time() + ']\txls\t' + name + '\n')
 
 def open_app(app, f):
     try:
@@ -86,9 +91,9 @@ def shutdown():
 
 def main():
     need_time = 120
-    total_time = 0
+    #total_time = 0
     time.sleep(5)
-    total_time += 5
+    #total_time += 5
     download_list()
     #while (os.path.exists(SAMPLE_PATH) == False):
     #    time.sleep(1)
@@ -105,15 +110,15 @@ def main():
     bufsize = 0
     f = open(SAMPLE_PATH, 'ab', bufsize)
     f.writelines('\n---------internal log---------\n\n')
+    f.close()
     for line in result:
         print line
+        f = open(SAMPLE_PATH, 'ab', bufsize)
         s = line.split('\t')
         if (s[0] == 'foxit' or s[0] == 'adobe'):
-            open_pdf(s[0], s[1])
-            f.writelines('[' + get_time() + ']\t' + s[0] + '\t' + s[1] + '\n')
+            open_pdf(s[0], s[1], f)
         elif (s[0] == 'ie' or s[0] == 'firefox' or s[0] == 'chrome'):
-            open_web(s[0], s[1])
-            f.writelines('[' + get_time() + ']\t' + s[0] + '\t' + s[1] + '\n')
+            open_web(s[0], s[1], f)
         elif (s[0] == 'app'):
             open_app(s[1], f)
         elif (s[0] == 'pic'):
@@ -124,19 +129,19 @@ def main():
             open_ppt(s[1], f)
         elif (s[0] == 'xls'):
             open_xls(s[1], f)
+        f.close()
+        upload_result()
         time.sleep(3)
-        total_time += 3
-    f.close()
-    upload_result()
-    wait_time = need_time - total_time
-    if wait_time > 0:
-        print 'Wait ' + str(wait_time) + ' seconds...'
-        time.sleep(wait_time)
-    else:
-        print 'No need to wait'
-        time.sleep(2)
-    print 'Shutting down...'
-    shutdown()
+    #    total_time += 2 
+    #wait_time = need_time - total_time
+    #if wait_time > 0:
+    #    print 'Wait ' + str(wait_time) + ' seconds...'
+    #    time.sleep(wait_time)
+    #else:
+    #    print 'No need to wait'
+    #    time.sleep(2)
+    #print 'Shutting down...'
+    #shutdown()
 
 if __name__ == '__main__':
     main()

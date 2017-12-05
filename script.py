@@ -6,15 +6,15 @@ import subprocess
 from os import listdir
 from os.path import isfile, join
 
-IMAGE_COUNT = 2
+IMAGE_COUNT = 300
 PROCESS_COUNT_MIN = 10
-PROCESS_COUNT_MAX = 25
+PROCESS_COUNT_MAX = 30
 #SHARE_PATH = '/rhome/wsong008/bigdata/vm_mem_dump_tool/share/'
 SHARE_PATH = '/home/wei/vm_mem_dump_tool/share/'
 #IMAGE_PATH = '/rhome/wsong008/bigdata/vm_mem_dump_tool/memdump/'
-#IMAGE_PATH = '/home/wei/vm_mem_dump_tool/memdump/'
 IMAGE_PATH = '/media/wei/be4108ae-9679-47ab-8ad8-7d4c9bc0f0a6/memdump/'
 COMMAND_START_VM = 'VBoxManage startvm win7 --type gui' ##choose one vm
+COMMAND_RESTORE_VM = 'VBoxManage snapshot win7 restore snapshot1' ##choose one vm
 COMMAND_DUMP = 'VBoxManage debugvm win7 dumpvmcore --filename=' + IMAGE_PATH
 OUTPUT = SHARE_PATH + 'sample.txt'
 web_list = []
@@ -82,7 +82,7 @@ def add_web():
     Log(line)
 
 def random_process_type():
-    return random.sample(['web', 'web', 'web', 'web', 'app', 'app', 'app', 'app', 'app_win', 'pdf', 'pic', 'doc' ,'ppt', 'xls'], 1)[0]
+    return random.sample(['web', 'web', 'web', 'web', 'app', 'app', 'app', 'app', 'app_win', 'pdf', 'pic', 'office'], 1)[0]
 
 def clear_output():
     f = open(SHARE_PATH + 'sample.txt','w')
@@ -149,12 +149,15 @@ def main():
                 add_app(process_type)
             if process_type == 'pic':
                 add_pic()
-            if process_type == 'doc':
-                add_doc()
-            if process_type == 'ppt':
-                add_ppt()
-            if process_type == 'xls':
-                add_xls()
+            if process_type == 'office':
+                office_type = random.sample(['doc', 'ppt', 'xls'], 1)[0]
+                if office_type == 'doc':
+                    add_doc()
+                if office_type == 'ppt':
+                    add_ppt()
+                if office_type == 'xls':
+                    add_xls()
+        os.system(COMMAND_RESTORE_VM)
         os.system(COMMAND_START_VM)
         print('Started!')
         time.sleep(120)
@@ -162,19 +165,20 @@ def main():
         print('Dumped!')
         os.system('mv ' + SHARE_PATH + 'result_sample.txt ' + IMAGE_PATH + 'memdump_' + str(image_count) + '.log')
         print('The ' + str(image_count) + 'th image is generated.')
-        print('Wait until current vm exit')
-        timeout = 0
-        while(True):
-            time.sleep(1)
-            timeout += 1
-            runningvms = subprocess.check_output(['VBoxManage', 'list', 'runningvms'])
-            if len(runningvms) == 0 or timeout > 60:
-                break
-            if timeout > 80:
-                print 'Timeout. Forcely poweroff'
-                os.system('VBoxManage controlvm win7 poweroff')
-                time.sleep(3)
-                break
+        os.system('VBoxManage controlvm win7 poweroff')
+        #print('Wait until current vm exit')
+        #timeout = 0
+        #while(True):
+        #    time.sleep(1)
+        #    timeout += 1
+        #    runningvms = subprocess.check_output(['VBoxManage', 'list', 'runningvms'])
+        #    if len(runningvms) == 0 or timeout > 60:
+        #        break
+        #    if timeout > 80:
+        #        print 'Timeout. Forcely poweroff'
+        #        os.system('VBoxManage controlvm win7 poweroff')
+        #        time.sleep(3)
+        #        break
         time.sleep(3)
 
 if __name__ == '__main__':
