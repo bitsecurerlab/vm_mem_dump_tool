@@ -63,28 +63,35 @@ def benchmark():
 def download_list():
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect('biocluster.ucr.edu', username='wsong008', password='cl3412CL@er')
+    ssh.connect('169.235.25.95', username='wei', password='wewe')
     sftp = ssh.open_sftp()
-    sftp.get('/rhome/wsong008/bigdata/vm_mem_dump_tool/share/' + SAMPLE_NAME, SAMPLE_PATH)
+    sftp.get('/home/wei/vm_mem_dump_tool/share/' + SAMPLE_NAME, SAMPLE_PATH)
     sftp.close()
     ssh.close()
 
 def upload_result():
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect('biocluster.ucr.edu', username='wsong008', password='cl3412CL@er')
+    ssh.connect('169.235.25.95', username='wei', password='wewe')
     sftp = ssh.open_sftp()
-    sftp.put(SAMPLE_PATH, '/rhome/wsong008/bigdata/vm_mem_dump_tool/share/result_' + SAMPLE_NAME)
+    sftp.put(SAMPLE_PATH, '/home/wei/vm_mem_dump_tool/share/result_' + SAMPLE_NAME)
     sftp.close()
     ssh.close()
 
 def get_time():
     return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
+def shutdown():
+    os.system("shutdown /s")
+
 def main():
+    need_time = 120
+    total_time = 0
+    time.sleep(5)
+    total_time += 5
     download_list()
     #while (os.path.exists(SAMPLE_PATH) == False):
-    #    time.sleep(2)
+    #    time.sleep(1)
     result = []
     f = open(SAMPLE_PATH, 'r')
     for line in f:
@@ -117,9 +124,19 @@ def main():
             open_ppt(s[1], f)
         elif (s[0] == 'xls'):
             open_xls(s[1], f)
-        time.sleep(random.randint(1, 3))
+        time.sleep(3)
+        total_time += 3
     f.close()
     upload_result()
+    wait_time = need_time - total_time
+    if wait_time > 0:
+        print 'Wait ' + str(wait_time) + ' seconds...'
+        time.sleep(wait_time)
+    else:
+        print 'No need to wait'
+        time.sleep(2)
+    print 'Shutting down...'
+    shutdown()
 
 if __name__ == '__main__':
     main()

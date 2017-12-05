@@ -2,15 +2,20 @@ import os
 import time
 import random
 import shutil
+import subprocess
 from os import listdir
 from os.path import isfile, join
 
-IMAGE_COUNT = 1
-PROCESS_COUNT = 30
-SHARE_PATH = '/rhome/wsong008/bigdata/vm_mem_dump_tool/share/'
-IMAGE_PATH = '/rhome/wsong008/bigdata/vm_mem_dump_tool/memdump/'
+IMAGE_COUNT = 2
+PROCESS_COUNT_MIN = 10
+PROCESS_COUNT_MAX = 25
+#SHARE_PATH = '/rhome/wsong008/bigdata/vm_mem_dump_tool/share/'
+SHARE_PATH = '/home/wei/vm_mem_dump_tool/share/'
+#IMAGE_PATH = '/rhome/wsong008/bigdata/vm_mem_dump_tool/memdump/'
+#IMAGE_PATH = '/home/wei/vm_mem_dump_tool/memdump/'
+IMAGE_PATH = '/media/wei/be4108ae-9679-47ab-8ad8-7d4c9bc0f0a6/memdump/'
 COMMAND_START_VM = 'VBoxManage startvm win7 --type gui' ##choose one vm
-COMMAND_DUMP = 'VBoxManage debugvm win7 dumpvmcore --filename = ' + IMAGE_PATH
+COMMAND_DUMP = 'VBoxManage debugvm win7 dumpvmcore --filename=' + IMAGE_PATH
 OUTPUT = SHARE_PATH + 'sample.txt'
 web_list = []
 app_list = []
@@ -25,7 +30,7 @@ prefer_pdf_app = ''
 prefer_web_app = ''
 
 def Log(line):
-    print line
+    #print line
     file = open(OUTPUT, 'a')
     file.write(str(line) + '\n')
     file.close()
@@ -77,11 +82,12 @@ def add_web():
     Log(line)
 
 def random_process_type():
-    return random.sample(['web', 'pdf', 'pic', 'app', 'app', 'app', 'app_win', 'doc' ,'ppt', 'xls'], 1)[0]
+    return random.sample(['web', 'web', 'web', 'web', 'app', 'app', 'app', 'app', 'app_win', 'pdf', 'pic', 'doc' ,'ppt', 'xls'], 1)[0]
 
 def clear_output():
     f = open(SHARE_PATH + 'sample.txt','w')
     f.close()
+    os.system('rm '+ IMAGE_PATH + '*')
 
 def load_list():
     f = open(SHARE_PATH + 'domain.txt','r')
@@ -125,11 +131,14 @@ def load_prefer_app():
     prefer_web_app = random.sample(['firefox', 'chrome', 'ie'], 1)[0]
     
 def main():
+    PROCESS_COUNT = random.randint(PROCESS_COUNT_MIN, PROCESS_COUNT_MAX)
+    print 'PROCESS_COUNT: ' + str(PROCESS_COUNT)
     clear_output()
     load_list()
     load_prefer_app()
     for image_count in range(IMAGE_COUNT):
         print('======================================')
+        os.system('date')
         for process_count in range(PROCESS_COUNT):
             process_type = random_process_type()
             if process_type == 'web':
@@ -146,16 +155,27 @@ def main():
                 add_ppt()
             if process_type == 'xls':
                 add_xls()
-        #os.system(COMMAND_START_VM)
+        os.system(COMMAND_START_VM)
         print('Started!')
-        time.sleep(2)########
-        #os.system(COMMAND_DUMP + 'memdump_' + str(image_count) + '.img')
+        time.sleep(120)
+        os.system(COMMAND_DUMP + 'memdump_' + str(image_count) + '.img')
         print('Dumped!')
-        #os.system('VBoxManage controlvm win7 poweroff')
-        time.sleep(5)
-        print('mv ' + SHARE_PATH + 'result_sample.txt ' + IMAGE_PATH + 'memdump_' + str(image_count) + '.log')
         os.system('mv ' + SHARE_PATH + 'result_sample.txt ' + IMAGE_PATH + 'memdump_' + str(image_count) + '.log')
         print('The ' + str(image_count) + 'th image is generated.')
+        print('Wait until current vm exit')
+        timeout = 0
+        while(True):
+            time.sleep(1)
+            timeout += 1
+            runningvms = subprocess.check_output(['VBoxManage', 'list', 'runningvms'])
+            if len(runningvms) == 0 or timeout > 60:
+                break
+            if timeout > 80:
+                print 'Timeout. Forcely poweroff'
+                os.system('VBoxManage controlvm win7 poweroff')
+                time.sleep(3)
+                break
+        time.sleep(3)
 
 if __name__ == '__main__':
     main()
