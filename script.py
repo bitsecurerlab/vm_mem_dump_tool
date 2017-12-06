@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 import random
 import shutil
@@ -6,17 +7,14 @@ import subprocess
 from os import listdir
 from os.path import isfile, join
 
-IMAGE_COUNT = 300
-PROCESS_COUNT_MIN = 10
-PROCESS_COUNT_MAX = 30
+IMAGE_COUNT = 200
+PROCESS_COUNT_MIN = 30
+PROCESS_COUNT_MAX = 40
 #SHARE_PATH = '/rhome/wsong008/bigdata/vm_mem_dump_tool/share/'
 SHARE_PATH = '/home/wei/vm_mem_dump_tool/share/'
 #IMAGE_PATH = '/rhome/wsong008/bigdata/vm_mem_dump_tool/memdump/'
 IMAGE_PATH = '/media/wei/be4108ae-9679-47ab-8ad8-7d4c9bc0f0a6/memdump/'
-COMMAND_START_VM = 'VBoxManage startvm win7 --type gui' ##choose one vm
-COMMAND_RESTORE_VM = 'VBoxManage snapshot win7 restore snapshot1' ##choose one vm
-COMMAND_DUMP = 'VBoxManage debugvm win7 dumpvmcore --filename=' + IMAGE_PATH
-OUTPUT = SHARE_PATH + 'sample.txt'
+INPUT = SHARE_PATH + 'sample_x.txt'
 web_list = []
 app_list = []
 app_win_list = []
@@ -31,7 +29,7 @@ prefer_web_app = ''
 
 def Log(line):
     #print line
-    file = open(OUTPUT, 'a')
+    file = open(INPUT, 'a')
     file.write(str(line) + '\n')
     file.close()
 
@@ -82,12 +80,7 @@ def add_web():
     Log(line)
 
 def random_process_type():
-    return random.sample(['web', 'web', 'web', 'web', 'app', 'app', 'app', 'app', 'app_win', 'pdf', 'pic', 'office'], 1)[0]
-
-def clear_output():
-    f = open(SHARE_PATH + 'sample.txt','w')
-    f.close()
-    os.system('rm '+ IMAGE_PATH + '*')
+    return random.sample(['web', 'web', 'app', 'app', 'app', 'app', 'app_win', 'pdf', 'pic', 'office'], 1)[0]
 
 def load_list():
     f = open(SHARE_PATH + 'domain.txt','r')
@@ -131,14 +124,26 @@ def load_prefer_app():
     prefer_web_app = random.sample(['firefox', 'chrome', 'ie'], 1)[0]
     
 def main():
-    PROCESS_COUNT = random.randint(PROCESS_COUNT_MIN, PROCESS_COUNT_MAX)
-    print 'PROCESS_COUNT: ' + str(PROCESS_COUNT)
-    clear_output()
+    global INPUT
+    #os.system('rm '+ IMAGE_PATH + '*')
+    index = sys.argv[1]
+    if index == '1':
+        machine_id = 'win7'
+        INPUT = SHARE_PATH + 'sample_' + machine_id +'.txt'
+    elif index == '2':
+        machine_id = 'win7_2'
+        INPUT = SHARE_PATH + 'sample_' + machine_id + '.txt'
+    else:
+        exit()
+    print machine_id
     load_list()
     load_prefer_app()
     for image_count in range(IMAGE_COUNT):
         print('======================================')
         os.system('date')
+        os.system('rm -f ' + INPUT)
+        PROCESS_COUNT = random.randint(PROCESS_COUNT_MIN, PROCESS_COUNT_MAX)
+        print 'PROCESS_COUNT: ' + str(PROCESS_COUNT)
         for process_count in range(PROCESS_COUNT):
             process_type = random_process_type()
             if process_type == 'web':
@@ -157,28 +162,15 @@ def main():
                     add_ppt()
                 if office_type == 'xls':
                     add_xls()
-        os.system(COMMAND_RESTORE_VM)
-        os.system(COMMAND_START_VM)
+        os.system('VBoxManage snapshot ' + machine_id + ' restore snapshot' + index)
+        os.system('VBoxManage startvm ' + machine_id + ' --type gui')
         print('Started!')
-        time.sleep(120)
-        os.system(COMMAND_DUMP + 'memdump_' + str(image_count) + '.img')
+        time.sleep(180)
+        os.system('VBoxManage debugvm ' + machine_id + ' dumpvmcore --filename=' + IMAGE_PATH + 'memdump_' + machine_id + '_' +  str(image_count) + '.img')
         print('Dumped!')
-        os.system('mv ' + SHARE_PATH + 'result_sample.txt ' + IMAGE_PATH + 'memdump_' + str(image_count) + '.log')
+        os.system('mv ' + SHARE_PATH + 'result_sample_' + machine_id + '.txt ' + IMAGE_PATH + 'memdump_' + machine_id + '_' + str(image_count) + '.log')
         print('The ' + str(image_count) + 'th image is generated.')
-        os.system('VBoxManage controlvm win7 poweroff')
-        #print('Wait until current vm exit')
-        #timeout = 0
-        #while(True):
-        #    time.sleep(1)
-        #    timeout += 1
-        #    runningvms = subprocess.check_output(['VBoxManage', 'list', 'runningvms'])
-        #    if len(runningvms) == 0 or timeout > 60:
-        #        break
-        #    if timeout > 80:
-        #        print 'Timeout. Forcely poweroff'
-        #        os.system('VBoxManage controlvm win7 poweroff')
-        #        time.sleep(3)
-        #        break
+        os.system('VBoxManage controlvm ' + machine_id + ' poweroff')
         time.sleep(3)
 
 if __name__ == '__main__':

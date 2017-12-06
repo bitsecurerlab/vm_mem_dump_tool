@@ -9,7 +9,7 @@ import subprocess
 import datetime
 import paramiko
 
-SAMPLE_NAME = 'sample_win7.txt'
+SAMPLE_NAME = 'sample_win7_2.txt'
 SHARE_PATH = 'C:\\share\\'
 SAMPLE_PATH = SHARE_PATH + SAMPLE_NAME
 

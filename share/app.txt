@@ -1,4 +1,6 @@
 Evernote	C:\\Program Files\\Evernote\\Evernote\\Evernote.exe
+WinRAR	C:\\Program Files\\WinRAR\\WinRAR.exe
+CCleaner	C:\\Program Files\\CCleaner\\CCleaner.exe
 FSviewer	C:\\Program Files\\FastStone Image Viewer\\FSViewer.exe
 foxit	C:\\Program Files\\Foxit Software\\Foxit Reader\\FoxitReader.exe
 screen	C:\\Program Files\\Free Fire Screensaver\\Free Fire Screensaver.exe
@@ -13,7 +15,6 @@ WinRAR	C:\\Program Files\\WinRAR\\WinRAR.exe
 Drive	C:\\Program Files\\Google\\Drive\\googledrivesync.exe
 earth	C:\\Program Files\\Google\\Google Earth\\client\\googleearth.exe
 Picasa	C:\\Program Files\\Google\\Picasa3\\Picasa3.exe
-kindle	C:\\Users\\enlighten\\AppData\\Local\\Amazon\\Kindle\\application\\Kindle.exe
 et	C:\\Program Files\\Kingsoft\\WPS Office\\10.8.0.6206\\office6\\et.exe
 wpp	C:\\Program Files\\Kingsoft\\WPS Office\\10.8.0.6206\\office6\\wpp.exe
 wps	C:\\Program Files\\Kingsoft\\WPS Office\\10.8.0.6206\\office6\\wps.exe
