@@ -8,6 +8,7 @@ from os import listdir
 from os.path import isfile, join
 
 IMAGE_COUNT = 200
+IMAGE_BATCH_NUM = 0
 PROCESS_COUNT_MIN = 30
 PROCESS_COUNT_MAX = 40
 #SHARE_PATH = '/rhome/wsong008/bigdata/vm_mem_dump_tool/share/'
@@ -23,7 +24,6 @@ pic_list = []
 doc_list = []
 ppt_list = []
 xls_list = []
-executed = []
 prefer_pdf_app = ''
 prefer_web_app = ''
 
@@ -34,20 +34,12 @@ def Log(line):
     file.close()
 
 def add_app(process_type):
-    try_time = 0
-    while(True):
-        if process_type == 'app':
-            app = random.sample(app_list,1)[0]
-        elif process_type == 'app_win':
-            app = random.sample(app_win_list,1)[0]
-        line = 'app\t' + app
-        try_time += 1
-        if try_time > 100:
-            break
-        if line not in executed:
-            executed.append(line)
-            Log(line)
-            break
+    if process_type == 'app':
+        app = random.sample(app_list,1)[0]
+    elif process_type == 'app_win':
+        app = random.sample(app_win_list,1)[0]
+    line = 'app\t' + app
+    Log(line)
 
 def add_pic():
     file_name = random.sample(pic_list, 1)[0]
@@ -136,9 +128,11 @@ def main():
     else:
         exit()
     print machine_id
+    print 'Image batch num: ' + str(IMAGE_BATCH_NUM)
     load_list()
     load_prefer_app()
     for image_count in range(IMAGE_COUNT):
+        image_count += IMAGE_COUNT * IMAGE_BATCH_NUM
         print('======================================')
         os.system('date')
         os.system('rm -f ' + INPUT)
