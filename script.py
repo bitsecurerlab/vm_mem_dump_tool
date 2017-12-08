@@ -160,6 +160,7 @@ def main():
         os.system('VBoxManage startvm ' + machine_id + ' --type gui')
         print('Started!')
         time.sleep(180)
+        os.system('rm -f ' + IMAGE_PATH + 'memdump_' + machine_id + '_' +  str(image_count) + '.img')
         os.system('VBoxManage debugvm ' + machine_id + ' dumpvmcore --filename=' + IMAGE_PATH + 'memdump_' + machine_id + '_' +  str(image_count) + '.img')
         print('Dumped!')
         os.system('mv ' + SHARE_PATH + 'result_sample_' + machine_id + '.txt ' + IMAGE_PATH + 'memdump_' + machine_id + '_' + str(image_count) + '.log')
