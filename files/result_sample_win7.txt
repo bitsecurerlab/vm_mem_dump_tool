@@ -1,0 +1,48 @@
+app	C:\\Users\\enlighten\\Downloads\\geogebra.exe
+app	magnify
+app	C:\\Program Files\\Kingsoft\\WPS Office\\10.8.0.6206\\office6\\wps.exe
+app	C:\\Program Files\\CCleaner\\CCleaner.exe
+doc	SampleDOCFile_200kb.doc
+firefox	https://www.academia.edu/
+app	C:\\Program Files\\Orbitron\\Orbitron.exe
+ppt	Presentations-Tips.ppt
+pic	9.jpg
+firefox	https://www.mirror.co.uk/
+xls	SampleXLSFile_19kb.xls
+adobe	7.pdf
+pic	5.jpg
+app	C:\\Program Files\\Kingsoft\\WPS Office\\10.8.0.6206\\office6\\wpp.exe
+adobe	3.pdf
+app	C:\\Program Files\\Kingsoft\\WPS Office\\10.8.0.6206\\office6\\et.exe
+app	C:\\Program Files\\AdeptDict\\FREE English-Marathi Translator\\English2Marathi.exe
+adobe	13.pdf
+xls	SampleXLSFile_19kb.xls
+adobe	12.pdf
+app	services.msc
+firefox	https://www.flickr.com/
+app	C:\\Program Files\\WinRAR\\WinRAR.exe
+app	C:\\Program Files\\Scratch\\Scratch.exe
+app	wuapp
+adobe	10.pdf
+firefox	https://www.dailymotion.com/
+adobe	19.pdf
+app	C:\\Program Files\\NASA\\World Wind 1.4\\WorldWind.exe
+adobe	5.pdf
+app	C:\\Program Files\\Minitab\\Minitab 18\\Mtb.exe
+ppt	SamplePPTFile_500kb.ppt
+app	C:\\Program Files\\Meitu\\XiuXiu\\XiuXiu.exe
+app	C:\\Program Files\\Planetarium0273a\\Planet0273a.exe
+app	C:\\Program Files\\Meitu\\XiuXiu\\XiuXiu.exe
+app	C:\\Program Files\\Graph\\Graph.exe
+
+---------internal log---------
+
+error C:\\Users\\enlighten\\Downloads\\geogebra.exe
+[2018-09-01 06:20:31]	app	magnify
+[2018-09-01 06:20:34]	app	C:\\Program Files\\Kingsoft\\WPS Office\\10.8.0.6206\\office6\\wps.exe
+[2018-09-01 06:20:36]	app	C:\\Program Files\\CCleaner\\CCleaner.exe
+[2018-09-01 06:20:39]	doc	SampleDOCFile_200kb.doc
+[2018-09-01 06:20:41]	firefox	https://www.academia.edu/
+[2018-09-01 06:20:45]	app	C:\\Program Files\\Orbitron\\Orbitron.exe
+[2018-09-01 06:20:47]	ppt	Presentations-Tips.ppt
+[2018-09-01 06:20:51]	pic	9.jpg
