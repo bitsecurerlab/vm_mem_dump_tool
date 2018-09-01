@@ -10,7 +10,7 @@ import datetime
 import paramiko
 
 SAMPLE_NAME = 'sample_win7.txt'
-SHARE_PATH = 'C:\\share\\'
+SHARE_PATH = 'C:\\files\\'
 SAMPLE_PATH = SHARE_PATH + SAMPLE_NAME
 
 def open_web(app, url, f):
