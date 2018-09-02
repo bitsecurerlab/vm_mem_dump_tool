@@ -5,7 +5,7 @@ import random
 from os import listdir
 
 IMAGE_COUNT = 400
-PROCESS_COUNT_MIN = 30
+PROCESS_COUNT_MIN = 20
 PROCESS_COUNT_MAX = 40
 FILES_PATH = '/home/wei/vm_mem_dump_tool/files/'
 DUMP_PATH = '/media/wei/be4108ae-9679-47ab-8ad8-7d4c9bc0f0a6/memdump/'
